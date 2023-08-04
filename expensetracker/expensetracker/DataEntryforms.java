@@ -37,6 +37,7 @@ public class DataEntryforms {
 	private JTable table;
 	private JTable table1;
 	private JTextField jtxtAmount;
+	private JTextField jtxtRef;
 	private JTextField jtxtDescription;
 	private JTextField txtdate;
 	private JTextField txtamount;
@@ -463,6 +464,26 @@ public class DataEntryforms {
 		btnNewButton_3_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnNewButton_3_1.setBounds(435, 11, 116, 38);
 		panel_2.add(btnNewButton_3_1);
+		
+		JButton btnNewButton_3_1_1 = new JButton("Reset");
+		btnNewButton_3_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					dateChooser.setDate(null);
+					jtxtAmount.setText(null);
+					comboBox.setSelectedIndex(0);
+					jtxtDescription.setText(null);
+					
+				}
+				catch(Exception ev)
+				{
+					JOptionPane.showMessageDialog(null,ev);
+				}
+			}
+		});
+		btnNewButton_3_1_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnNewButton_3_1_1.setBounds(580, 11, 116, 38);
+		panel_2.add(btnNewButton_3_1_1);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
