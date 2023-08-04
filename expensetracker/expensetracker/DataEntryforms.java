@@ -1,5 +1,6 @@
 package expensetracker;
 import java.awt.EventQueue;
+import java.util.Calendar;
 
 
 import javax.swing.JFrame;
@@ -34,18 +35,29 @@ public class DataEntryforms {
 
 	private JFrame frame;
 	private JTable table;
+	private JTable table1;
 	private JTextField jtxtAmount;
 	private JTextField jtxtDescription;
+	private JTextField txtdate;
+	private JTextField txtamount;
+	private JTextField txtcategory;
+	private JTextField txtdescription;
+	private JDateChooser dateChooser;
+	private JComboBox comboBox;
 	
 	Connection conn = null;
 	PreparedStatement pst = null;
 	ResultSet rs = null;
 	
 	DefaultTableModel model = new DefaultTableModel();
+	private JTextField jtxtsbar;
+	private JTextField jtxtscat;
+	private JTextField jtxtsamo;
 
 	/**
 	 * Launch the application.
 	 */
+	
 	
 	public void updateTable() 
 		{
@@ -99,6 +111,193 @@ public class DataEntryforms {
 		Object col[] = {"Date", "Amount", "Category", "Description"};
 		model.setColumnIdentifiers(col);
 		table.setModel(model);
+		
+		JButton sbDate = new JButton("Search by Date");
+	    sbDate.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	try {
+	                String dateToSearch = jtxtsbar.getText();
+	              // Assuming jtxtsbar is a text field where the user inputs the date
+	                 //Convert the input date to "yyyy-MM-dd" format for database query
+	                SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	                SimpleDateFormat dbDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	                
+	                java.util.Date selectedDate = inputDateFormat.parse(dateToSearch);
+	                String formattedDate = dbDateFormat.format(selectedDate); 
+
+	                String sql = "SELECT * FROM expensedata WHERE Date =?";
+	                pst = conn.prepareStatement(sql);
+	                pst.setString(1, formattedDate);
+	                rs = pst.executeQuery();
+
+	                System.out.println("Date\t\tAmount\t\tCategory\t\tDescription");
+	                
+	                DefaultTableModel model = (DefaultTableModel) table1.getModel();
+	                model.setRowCount(0);
+	               
+	                boolean foundData = false;
+	                while (rs.next()) {
+	                    String Date = rs.getString("Date");
+	                    String Amount = rs.getString("Amount");
+	                    String Category = rs.getString("Category");
+	                    String Description = rs.getString("Description");
+
+	                    System.out.println(Date + "\t" + Amount + "\t" + Category + "\t" + Description);
+	                    model.addRow(new Object[]{Date, Amount, rs.getString("Category"), Description});
+	                    foundData = true;
+	                }
+	                if(!foundData) {
+	                	System.out.println("cant find record with date: " + jtxtsbar.getText());
+	                }
+	            } catch (Exception ev) {
+	                System.out.println("Error executing query:");
+	                ev.printStackTrace();
+	            }
+	        }
+
+	    });
+				
+		sbDate.setBounds(590, 369, 126, 39);
+		frame.getContentPane().add(sbDate);
+		
+		sbDate.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		
+		jtxtsbar = new JTextField();
+		jtxtsbar.setBounds(591, 329, 179, 39);
+		frame.getContentPane().add(jtxtsbar);
+		jtxtsbar.setColumns(10);
+		
+		JPanel panelforsearch = new JPanel();
+		panelforsearch.setLayout(null);
+		panelforsearch.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		panelforsearch.setBounds(805, 313, 543, 441);
+		frame.getContentPane().add(panelforsearch);
+		
+		JScrollPane scrollPaneforsearch = new JScrollPane();
+		scrollPaneforsearch.setBounds(10, 11, 523, 402);
+		panelforsearch.add(scrollPaneforsearch);
+		
+		/*JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 11, 444, 386);
+		panelforsearch.add(scrollPane); */
+		
+		table1 = new JTable();
+		table1.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null},
+			},
+			new String[] {
+				"Date", "Amount", "Category", "Description"
+			}
+		));
+		scrollPaneforsearch.setViewportView(table1);
+		
+		JButton sbCategory = new JButton("Search by category");
+		sbCategory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String sql ="Select * from expensedata where Category=?";
+					pst = conn.prepareStatement(sql);
+					pst.setString(1, jtxtscat.getText());
+					rs = pst.executeQuery();
+					
+					System.out.println("Date\t\tAmount\t\tCategory\t\tDescription");
+					DefaultTableModel model = (DefaultTableModel) table1.getModel();
+	                model.setRowCount(0);
+					
+					boolean foundData = false;
+					while(rs.next()) {
+						
+						SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+						String dateString = rs.getString("Date");
+					
+					    
+					    java.util.Date Date = dateFormat.parse(dateString);				    
+						String Amount = rs.getString("Amount");
+						String Description = rs.getString("Description");
+						String Category = rs.getString("Category");
+						
+						
+						System.out.println(Date + "\t" + Amount + "\t" + Category + "\t" + Description);
+						model.addRow(new Object[]{Date, Amount, rs.getString("Category"), Description});
+						foundData = true;
+						
+					}
+					if (!foundData) {
+		                System.out.println("No records found with Category = " + jtxtscat.getText() );
+		            }
+					}
+					catch(Exception ev) {
+						System.out.println("Error executing query:");
+				        ev.printStackTrace();
+					}
+				}
+			});
+		
+		sbCategory.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		sbCategory.setBounds(590, 476, 142, 39);
+		frame.getContentPane().add(sbCategory);
+		
+		jtxtscat = new JTextField();
+		jtxtscat.setColumns(10);
+		jtxtscat.setBounds(590, 433, 179, 39);
+		frame.getContentPane().add(jtxtscat);
+		
+		jtxtsamo = new JTextField();
+		jtxtsamo.setColumns(10);
+		jtxtsamo.setBounds(590, 540, 179, 39);
+		frame.getContentPane().add(jtxtsamo);
+		
+		JButton sbAmount = new JButton("Search by amount");
+		sbAmount.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			try {
+			String sql ="Select * from expensedata where Amount="+(jtxtsamo.getText());
+			pst = conn.prepareStatement(sql);
+			rs = pst.executeQuery();
+			
+			System.out.println("Date\t\tAmount\t\tCategory\t\tDescription");
+			DefaultTableModel model = (DefaultTableModel) table1.getModel();
+            model.setRowCount(0);
+			
+			boolean foundData = false;
+			while(rs.next()) {
+				
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+				String dateString = rs.getString("Date");
+			
+			    
+			    java.util.Date Date = dateFormat.parse(dateString);				    
+				String Amount = rs.getString("Amount");
+				String Description = rs.getString("Description");
+				String Category = rs.getString("Category");
+				
+				
+				System.out.println(Date + "\t" + Amount + "\t" + Category + "\t" + Description);
+				model.addRow(new Object[]{Date, Amount, rs.getString("Category"), Description});
+				foundData = true;
+				
+			}
+			
+			if(!foundData) {
+	            System.out.println("No records found with Amount =" + jtxtsamo.getText());
+	        }
+			
+			}
+			catch(Exception ev) {
+				System.out.println("Error executing query:");
+		        ev.printStackTrace();
+			}
+		}
+	});
+		sbAmount.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		sbAmount.setBounds(590, 579, 142, 39);
+		frame.getContentPane().add(sbAmount);
+		
+		JLabel lblNewLabel_1 = new JLabel("Expense Logger");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_1.setBounds(268, 16, 171, 22);
+		frame.getContentPane().add(lblNewLabel_1);
 		conn = DisplayExpenses.ConnectDB();
 		
 		
@@ -116,7 +315,7 @@ public class DataEntryforms {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel_1.setBounds(25, 25, 837, 163);
+		panel_1.setBounds(32, 49, 837, 163);
 		frame.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -147,7 +346,7 @@ public class DataEntryforms {
 		panel_1.add(jtxtDescription);
 		
 		JDateChooser dateChooser = new JDateChooser();
-		dateChooser.setDateFormatString("dd-MMM-yyyy");
+		dateChooser.setDateFormatString("dd-MM-yyyy");
 		dateChooser.setBounds(191, 21, 96, 20);
 		panel_1.add(dateChooser);
 		
@@ -158,7 +357,7 @@ public class DataEntryforms {
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel_2.setBounds(32, 227, 830, 60);
+		panel_2.setBounds(39, 239, 830, 60);
 		frame.getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
@@ -250,11 +449,6 @@ public class DataEntryforms {
 		btnNewButton_2.setBounds(291, 11, 116, 38);
 		panel_2.add(btnNewButton_2);
 		
-		JButton btnNewButton_3 = new JButton("Search Expense");
-		btnNewButton_3.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnNewButton_3.setBounds(434, 11, 116, 38);
-		panel_2.add(btnNewButton_3);
-		
 		JButton btnNewButton_3_1 = new JButton("Exit");
 		btnNewButton_3_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -267,12 +461,12 @@ public class DataEntryforms {
 				
 	
 		btnNewButton_3_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnNewButton_3_1.setBounds(580, 11, 116, 38);
+		btnNewButton_3_1.setBounds(435, 11, 116, 38);
 		panel_2.add(btnNewButton_3_1);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel.setBounds(32, 329, 633, 425);
+		panel.setBounds(32, 329, 501, 425);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
