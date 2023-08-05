@@ -3,6 +3,7 @@ import java.util.Stack;
 import java.sql.*;
 import javax.swing.*;
 
+//This section of code connects the database.
 public class DisplayExpenses {
 	public static Connection ConnectDB() {
 		

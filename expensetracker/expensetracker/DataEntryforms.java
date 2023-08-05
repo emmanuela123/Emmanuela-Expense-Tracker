@@ -30,6 +30,7 @@ import javax.swing.DefaultComboBoxModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.awt.Color;
 
 public class DataEntryforms {
 
@@ -60,6 +61,7 @@ public class DataEntryforms {
 	 */
 	
 	
+//The function updateTable() updates the table according to any changes made, when called	
 	public void updateTable() 
 		{
 		conn = DisplayExpenses.ConnectDB();
@@ -88,7 +90,18 @@ public class DataEntryforms {
 	}
 	}
 	
-	
+	public void open() {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    DataEntryforms window = new DataEntryforms();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -102,24 +115,24 @@ public class DataEntryforms {
 			}
 		});
 	}
+	
 
-	/**
-	 * Create the application.
-	 */
+
+	
+//The function DataEntryforms() Creates the design of the table 	
 	public DataEntryforms() {
 		initialize();
 		
 		Object col[] = {"Date", "Amount", "Category", "Description"};
 		model.setColumnIdentifiers(col);
 		table.setModel(model);
-		
+			
+// This section of code allows the user to search for an expense by the date of the expense		
 		JButton sbDate = new JButton("Search by Date");
 	    sbDate.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	        	try {
 	                String dateToSearch = jtxtsbar.getText();
-	              // Assuming jtxtsbar is a text field where the user inputs the date
-	                 //Convert the input date to "yyyy-MM-dd" format for database query
 	                SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	                SimpleDateFormat dbDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	                
@@ -162,13 +175,16 @@ public class DataEntryforms {
 		frame.getContentPane().add(sbDate);
 		
 		sbDate.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		
+	//The textbox where the user inputs the date of expense they're looking for
 		jtxtsbar = new JTextField();
 		jtxtsbar.setBounds(591, 329, 179, 39);
 		frame.getContentPane().add(jtxtsbar);
 		jtxtsbar.setColumns(10);
+	//End of searchbyDate section of code	
 		
+	//This is the panel that stores the table which displays the results of the search functions	
 		JPanel panelforsearch = new JPanel();
+		panelforsearch.setBackground(new Color(204, 204, 255));
 		panelforsearch.setLayout(null);
 		panelforsearch.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		panelforsearch.setBounds(805, 313, 543, 441);
@@ -178,10 +194,7 @@ public class DataEntryforms {
 		scrollPaneforsearch.setBounds(10, 11, 523, 402);
 		panelforsearch.add(scrollPaneforsearch);
 		
-		/*JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 444, 386);
-		panelforsearch.add(scrollPane); */
-		
+//This is the table that stores the results of the query search
 		table1 = new JTable();
 		table1.setModel(new DefaultTableModel(
 			new Object[][] {
@@ -193,6 +206,7 @@ public class DataEntryforms {
 		));
 		scrollPaneforsearch.setViewportView(table1);
 		
+//This section of code allows the user to search for an expense by category		
 		JButton sbCategory = new JButton("Search by category");
 		sbCategory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -239,11 +253,14 @@ public class DataEntryforms {
 		sbCategory.setBounds(590, 476, 142, 39);
 		frame.getContentPane().add(sbCategory);
 		
+		//The textbox that the user enters the category by
 		jtxtscat = new JTextField();
 		jtxtscat.setColumns(10);
 		jtxtscat.setBounds(590, 433, 179, 39);
 		frame.getContentPane().add(jtxtscat);
+		//End of section for search by category
 		
+		//This is the textbox that the user enters the amount to search for
 		jtxtsamo = new JTextField();
 		jtxtsamo.setColumns(10);
 		jtxtsamo.setBounds(590, 540, 179, 39);
@@ -294,29 +311,35 @@ public class DataEntryforms {
 		sbAmount.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		sbAmount.setBounds(590, 579, 142, 39);
 		frame.getContentPane().add(sbAmount);
+		//End of the section of code to search by amount
 		
-		JLabel lblNewLabel_1 = new JLabel("Expense Logger");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_1.setBounds(268, 16, 171, 22);
+		//Label for the title of the application
+		JLabel lblNewLabel_1 = new JLabel("Uni Budg£");
+		lblNewLabel_1.setFont(new Font("Papyrus", lblNewLabel_1.getFont().getStyle(), 30));
+		lblNewLabel_1.setBounds(595, 15, 254, 39);
 		frame.getContentPane().add(lblNewLabel_1);
 		conn = DisplayExpenses.ConnectDB();
 		
-		
+		//The updateTable function called to show the new results of the query.
 		updateTable();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	
+	//Lables panels and other stuff for the input of data to create an expense and display all expenses.
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(0, 0, 1460, 800);
+		frame.getContentPane().setBackground(new Color(153, 204, 204));
+		frame.setBounds(0, 0, 1383, 812);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(204, 204, 255));
 		panel_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel_1.setBounds(32, 49, 837, 163);
+		panel_1.setBounds(25, 65, 895, 163);
 		frame.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -357,11 +380,13 @@ public class DataEntryforms {
 		panel_1.add(comboBox);
 		
 		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(204, 204, 255));
 		panel_2.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel_2.setBounds(39, 239, 830, 60);
+		panel_2.setBounds(25, 250, 739, 60);
 		frame.getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
+		//Section of code that deals with adding an expense
 		JButton btnNewButton = new JButton("Add Expense");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -372,8 +397,6 @@ public class DataEntryforms {
 				try {
 					pst = conn.prepareStatement(sql);
 					
-					 //Date selectedDate = dateChooser.getDate();
-			         //String formattedDate = Dformat.format(selectedDate);
 					
 					pst.setString(1, Dformat.format(dateChooser.getDate()));
 					pst.setString(2, jtxtAmount.getText());
@@ -410,7 +433,9 @@ public class DataEntryforms {
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnNewButton.setBounds(10, 11, 116, 38);
 		panel_2.add(btnNewButton);
+		//End of section
 		
+		//Section of code that allows for editing an expense
 		JButton btnNewButton_1 = new JButton("Edit Expense");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -428,7 +453,9 @@ public class DataEntryforms {
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnNewButton_1.setBounds(147, 11, 116, 38);
 		panel_2.add(btnNewButton_1);
+		//End of section
 		
+		//Section of code for deleting an expense
 		JButton btnNewButton_2 = new JButton("Delete Expense");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -449,22 +476,27 @@ public class DataEntryforms {
 		btnNewButton_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnNewButton_2.setBounds(291, 11, 116, 38);
 		panel_2.add(btnNewButton_2);
+		//End of section
 		
+		//Section of code dealing with exiting the application
 		JButton btnNewButton_3_1 = new JButton("Exit");
-		btnNewButton_3_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				frame = new JFrame("Exit");
-				if(JOptionPane.showConfirmDialog(frame, "Confirm your exit", "Data Entry Form", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
-					System.exit(0);
-				}
-			}
-		});
+	    btnNewButton_3_1.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent arg0) {
+	            int result = JOptionPane.showConfirmDialog(frame, "Confirm your exit", "Data Entry Form", JOptionPane.YES_NO_OPTION);
+	            if (result == JOptionPane.YES_OPTION) {
+	                frame.dispose(); // Close the JFrame when "Yes" is clicked
+	            }
+	        }
+	    });
 				
 	
 		btnNewButton_3_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnNewButton_3_1.setBounds(435, 11, 116, 38);
 		panel_2.add(btnNewButton_3_1);
+		//end of section
 		
+		
+		//This section of code deals with reseting an expense entry
 		JButton btnNewButton_3_1_1 = new JButton("Reset");
 		btnNewButton_3_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -484,8 +516,10 @@ public class DataEntryforms {
 		btnNewButton_3_1_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnNewButton_3_1_1.setBounds(580, 11, 116, 38);
 		panel_2.add(btnNewButton_3_1_1);
+		//End of section
 		
 		JPanel panel = new JPanel();
+		panel.setBackground(new Color(204, 204, 255));
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		panel.setBounds(32, 329, 501, 425);
 		frame.getContentPane().add(panel);
@@ -495,6 +529,7 @@ public class DataEntryforms {
 		scrollPane.setBounds(10, 11, 444, 386);
 		panel.add(scrollPane);
 		
+		//Table for the adding,editing,deleting etc functions.
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
