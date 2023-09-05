@@ -1,2 +1,2 @@
 # githubtest
-testing how github works
+This is my workspace for my expense tracker app
